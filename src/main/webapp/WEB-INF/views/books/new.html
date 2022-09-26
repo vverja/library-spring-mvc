@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <title>Новая книга</title>
+</head>
+<body>
+<header th:replace="/fragments.html :: navbar"></header>
+<h1 class="m-5 ">Карточка книги</h1>
+<!--/*@thymesVar id="book" type="com.vereskul.library.model.BookEntity"*/-->
+<form th:object="${book}" th:method="POST" th:action="@{/books/new}">
+    <input id="id" th:field="*{book_id}" hidden>
+    <div class="m-3 row" >
+        <label for="name" class="form-label col-1">Название</label>
+        <input id="name" class="col-2" th:field="*{name}">
+    </div>
+    <div class="m-3 row" th:if="${#fields.hasErrors('name')}" style="color: red" th:errors="*{name}"></div>
+    <div class="m-3 row">
+        <label  for="author" class="form-label col-1">Автор</label>
+        <input id="author" class="col-2" th:field="*{author}">
+    </div>
+    <div class="m-3 row" th:if="${#fields.hasErrors('author')}" style="color: red" th:errors="*{author}"></div>
+    <div class="m-3 row">
+        <label for="yearOfWriting" class="form-label col-1">Год издания</label>
+        <input id="yearOfWriting" class="col-2" th:field="*{yearOfWriting}">
+    </div>
+    <div class="m-3 row" th:if="${#fields.hasErrors('yearOfWriting')}" style="color: red" th:errors="*{yearOfWriting}"></div>
+    <div class="m-3 row">
+        <input class="btn btn-outline-primary col-1 m-1" id="edit" type="submit" value="Добавить">
+    </div>
+</form>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+
+</body>
+</html>

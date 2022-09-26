@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Карточка читателя</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous"></head>
+<body>
+<header th:replace="/fragments.html :: navbar"></header>
+<h1 class="m-5 ">Карточка читателя</h1>
+<!--/*@thymesVar id="person" type="com.vereskul.library.model.PersonEntity"*/-->
+<form th:object="${person}" th:method="PATCH" th:action="@{${person.getFullName()!=null?'/person/{id}(id=${person.getPerson_id()})}':}">
+    <input id="id" th:field="*{person_id}" hidden>
+    <div class="m-3 row" >
+        <label for="name" class="form-label col-1">Название</label>
+        <input id="name" class="col-2" th:field="*{fullName}">
+    </div>
+    <div class="m-3 row">
+        <label  for="birthday" class="form-label col-1">Дата рождения</label>
+        <input id="birthday" type="date" class="col-2" th:field="*{birthday}">
+    </div>
+    <input class="btn btn-outline-primary m-1" id="edit" type="submit" value="Изменить">
+</form>
+<form th:method="DELETE" th:action="@{/person/{id}(id=${person.getPerson_id()})}">
+    <input id="delete" class="btn btn-outline-primary m-1" type="submit" value="Удалить">
+</form>
+    <!--/*@thymesVar id="person_books" type="java.util.List<com.vereskul.library.model.BookEntity>"*/-->
+    <div th:if="${not #lists.isEmpty(person_books)} ">
+        <h2 class="m-3">Список книг читателя</h2>
+        <form th:action="@{owned_books/{id}(id=${person.getPerson_id()})}" th:method="DELETE" th:object="${book}">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Название</th>
+                    <th scope="col">Автор</th>
+                    <th scope="col">Год издания</th>
+                    <th scope="col">Возврат</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="book : ${person_books}">
+                    <th scope="row" th:text="${book.book_id}"></th>
+                    <td th:text="${book.name}"></td>
+                    <td th:text="${book.author}"></td>
+                    <td th:text="${book.yearOfWriting}"></td>
+                    <td><input type="checkbox" name="return" th:value="${book.book_id}" value=""></td>
+                </tr>
+            </tbody>
+        </table>
+            <input class="btn btn-outline-primary col-1 m-1" type="submit" value="Отдать книгу">
+            <button type="button" class="btn btn-outline-primary col-1 m-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Добавить книгу
+            </button>
+        </form>
+    </div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Выбери книгу</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="row" th:method="POST" th:action="@{owned_books/{id}(id=${person.person_id})}">
+                <div class="modal-body">
+                    <select id="new_book" th:object="${book}" th:field="*{book_id}" class="md-3">
+                        <!--/*@thymesVar id="list_of_free_books" type="java.util.List<com.vereskul.library.model.BookEntity>"*/-->
+                        <option th:each="book : ${list_of_free_books}" th:value="${book.getBook_id()}" th:text="${book.getName()}"></option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="submit" class="btn btn-primary">Отдать книгу</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+</body>
+</html>
